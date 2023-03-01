@@ -1,6 +1,7 @@
 ﻿using BCH.Domain.Interfaces.Services;
-using BCH.Domain;
 using BCH.Domain.Interfaces.Repositories;
+using BCH.Domain.Entities;
+using BCH.Domain.Primitives;
 
 namespace BCH.Application.Services
 {
@@ -14,17 +15,17 @@ namespace BCH.Application.Services
                 ?? throw new ArgumentNullException(nameof(blockchainRepo));
         }
 
-        public async Task<IQueryable<Blockchain>> GetAllBlockchainAsync(CancellationToken cancellationToken)
+        public async Task<IQueryable<BchInfo>> GetAllBlockchainAsync(CancellationToken cancellationToken)
         {
             return await _blockchainRepo.GetAllAsync(cancellationToken);
         }
 
-        public async Task<IQueryable<Blockchain>> GetBlockchainByTypeAsync(BlockchainType type, CancellationToken cancellationToken)
+        public async Task<IQueryable<BchInfo>> GetBlockchainByTypeAsync(BlockchainType type, CancellationToken cancellationToken)
         {
             return await _blockchainRepo.GetByTypeAsync(type, cancellationToken);
         }
 
-        async Task<bool> IBlockchainService.SaveInfo(Blockchain blockchain, CancellationToken cancellationToken = default)
+        async Task<BchInfo> IBlockchainService.SaveInfo(BchInfo blockchain, CancellationToken cancellationToken = default)
         {
             return await _blockchainRepo.SaveAsync(blockchain, cancellationToken);
         }

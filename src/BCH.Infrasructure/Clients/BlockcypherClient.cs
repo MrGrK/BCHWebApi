@@ -1,6 +1,4 @@
-﻿using BCH.Domain;
-using BCH.Infrasructure.Clients.Interfaces;
-using BCH.Infrasructure.Models;
+﻿using BCH.Application.Models;
 using BCH.Infrasructure.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,6 +9,8 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Net.Http.Json;
+using BCH.Domain.Primitives;
+using BCH.Application.Interfaces.Clients;
 
 namespace BCH.Infrasructure.Clients
 {

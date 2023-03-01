@@ -1,5 +1,5 @@
-﻿using BCH.Domain;
-using BCH.Infrasructure.Models;
+﻿using BCH.Domain.Primitives;
+using BCH.Application.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

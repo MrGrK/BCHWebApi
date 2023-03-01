@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BCH.Domain
+namespace BCH.Domain.Primitives
 {
-    public enum BlockchainType
+    public class Entity
     {
-        BTC,
-        ETH,
-        Dash
+        public Entity() { }
     }
 }
