@@ -1,8 +1,10 @@
 ﻿using BCH.Application.Interfaces.Clients;
 using BCH.Application.Models;
+using BCH.Application.Queries.GetAll;
 using BCH.Domain.Abstractions;
 using BCH.Domain.Entities;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,16 +14,18 @@ using System.Threading.Tasks;
 
 namespace BCH.Application.Queries.GetByDateTime
 {
-    public class GetByTimestampHandler : IRequestHandler<GetByTimestampQuery, IEnumerable<BCHModel>>
+    public class GetByTypeHandler : IRequestHandler<GetByTypeQuery, IEnumerable<BCHModel>>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<GetByTypeHandler> _logger;
 
-        public GetByTimestampHandler(IUnitOfWork uow)
+        public GetByTypeHandler(IUnitOfWork uow, ILogger<GetByTypeHandler> logger)
         {
             _unitOfWork = uow;
+            _logger = logger;
         }
 
-        public async Task<IEnumerable<BCHModel>> Handle(GetByTimestampQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<BCHModel>> Handle(GetByTypeQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -38,6 +42,7 @@ namespace BCH.Application.Queries.GetByDateTime
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, ex.Message, ex.StackTrace);
                 throw ex;
             }
         }

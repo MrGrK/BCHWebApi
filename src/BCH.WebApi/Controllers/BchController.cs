@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using BCH.Application.Queries.GetByDateTime;
 using BCH.WebApi.Request;
+using BCH.Application.Queries.GetAll;
 
 namespace BCH.WebApi.Controllers
 {
@@ -43,17 +44,39 @@ namespace BCH.WebApi.Controllers
             return await Sender.Send(command, cancellationToken);
         }
 
+        /// <summary>
+        /// Get blockchain info by type in desc order
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("get")]
         public async Task<ActionResult> GetByTypeAsync(BlockchainType type, CancellationToken cancellationToken)
         {
-            var command = new GetByTimestampQuery()
+            var query = new GetByTypeQuery()
             {
                 Type = type
             };
 
-            var result = await Sender.Send(command, cancellationToken);
+            var result = await Sender.Send(query, cancellationToken);
             return result.Count() > 0 ? Ok(result): NotFound();
+        }
+
+        /// <summary>
+        /// Get all blockchain info in desc order
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("get/all")]
+        public async Task<ActionResult> GetAllAsync(CancellationToken cancellationToken)
+        {
+            var query = new GetAllQuery();
+
+            var result = await Sender.Send(query, cancellationToken);
+            return result.Count() > 0 ? Ok(result) : NotFound();
         }
     }
 }

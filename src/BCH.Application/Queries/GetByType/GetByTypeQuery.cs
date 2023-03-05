@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BCH.Application.Queries.GetByDateTime
 {
-    public record GetByTimestampQuery: IRequest<IEnumerable<BCHModel>>
+    public record GetByTypeQuery: IRequest<IEnumerable<BCHModel>>
     {
         public BlockchainType Type { get; set; }
     }

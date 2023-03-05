@@ -21,9 +21,13 @@ namespace BCH.Infrasructure.Data.Repositories
             _context = context;
         }
 
-        public Task<IQueryable<BchInfo>> GetAllAsync(CancellationToken token)
+        public async Task<List<Info>> GetAllAsync(CancellationToken token)
         {
-            throw new NotImplementedException();
+            var result = await _context.BchInfos
+                .OrderByDescending(d => d.CreateAt)
+                .Select(a => a.Info).AsNoTracking().ToListAsync();
+
+            return result;
         }
 
         public async Task<List<Info>> GetByTypeAsync(BlockchainType type, CancellationToken cancellationToken)
