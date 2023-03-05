@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BCH.Domain.Entities;
 using BCH.Domain.Primitives;
+using BCH.Domain.ValueObjects;
 
 namespace BCH.Domain.Interfaces.Repositories
 {
@@ -12,7 +13,7 @@ namespace BCH.Domain.Interfaces.Repositories
     {
         public Task<IQueryable<BchInfo>> GetAllAsync(CancellationToken token);
 
-        public Task<IQueryable<BchInfo>> GetByTypeAsync(BlockchainType type, CancellationToken cancellationToken);
+        public Task<List<Info>> GetByTypeAsync(BlockchainType type, CancellationToken cancellationToken);
 
         public Task<BchInfo> SaveAsync(BchInfo entity, CancellationToken cancellationToken);
     }

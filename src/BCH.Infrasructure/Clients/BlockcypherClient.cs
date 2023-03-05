@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Net.Http.Json;
 using BCH.Domain.Primitives;
 using BCH.Application.Interfaces.Clients;
+using BCH.Infrasructure.Configuration.Options;
 
 namespace BCH.Infrasructure.Clients
 {
@@ -19,24 +20,21 @@ namespace BCH.Infrasructure.Clients
         //private readonly IBlockcypherService _blockcypherService;
         private readonly JsonSerializerOptions _jsonOptions;
         private readonly HttpClient _httpClient;
-        private readonly Dictionary<BlockchainType, string> URIES = new Dictionary<BlockchainType, string>()
-        {
-            {BlockchainType.BTC, "/v1/btc/main"},
-            {BlockchainType.ETH, "/v1/eth/main"},
-            {BlockchainType.Dash, "/v1/dash/main"}
-        };
+        private readonly Dictionary<BlockchainType, string> _uries;
 
-        public Uri ApiBaseUri { get; private set; }
-
-        public BlockcypherClient(HttpClient httpClient)
+        public BlockcypherClient(HttpClient httpClient, BlockcyApiSettings settings)
         {
             if (httpClient.BaseAddress == null)
                 throw new InvalidOperationException($"HttpClient.BaseAddress is not configured.");
 
             _httpClient= httpClient;
 
-            ApiBaseUri = httpClient.BaseAddress;
-
+            _uries = new Dictionary<BlockchainType, string>()
+            {
+                {BlockchainType.BTC, settings.Btc},
+                {BlockchainType.ETH, settings.Eth},
+                {BlockchainType.Dash, settings.Dash}
+            };
 
             _jsonOptions = new JsonSerializerOptions()
             {
@@ -50,7 +48,7 @@ namespace BCH.Infrasructure.Clients
         {
             return
                 await _httpClient.GetFromJsonAsync<BCHModel>(
-                    URIES.GetValueOrDefault(type),
+                    _uries.GetValueOrDefault(type),
                     _jsonOptions,
                     cancellationToken)
                 .ConfigureAwait(false);

@@ -12,7 +12,7 @@ namespace BCH.Domain.Interfaces.Services
     {
         public Task<IQueryable<BchInfo>> GetAllBlockchainAsync(CancellationToken cancellationToken);
 
-        public Task<IQueryable<BchInfo>> GetBlockchainByTypeAsync(BlockchainType type, CancellationToken cancellationToken);
+        public Task<List<string>> GetBlockchainByTypeAsync(BlockchainType type, CancellationToken cancellationToken);
 
         public Task<BchInfo> SaveInfo(BchInfo blockchain, CancellationToken cancellationToken = default);
     }

@@ -10,6 +10,9 @@ using BCH.Domain.Entities;
 using BCH.Domain.Interfaces.Repositories;
 using BCH.Application.Models;
 using MediatR;
+using System.Collections;
+using Newtonsoft.Json;
+using BCH.Domain.ValueObjects;
 
 namespace BCH.Application.Commands.Create
 {
@@ -18,7 +21,7 @@ namespace BCH.Application.Commands.Create
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBlockcypherClient _client;
 
-        public CreateBchInfoCommandHandler( IUnitOfWork uow, IBlockcypherClient client)
+        public CreateBchInfoCommandHandler(IUnitOfWork uow, IBlockcypherClient client)
         {
             _unitOfWork = uow;
             _client = client;
@@ -26,37 +29,22 @@ namespace BCH.Application.Commands.Create
 
         public async Task<BCHModel> Handle(CreateBchInfoCommand request, CancellationToken cancellationToken)
         {
-            var result = await _client.GetBCHAsync(request.Type, cancellationToken);
-
-            if (result == null)
-            {
-                throw new Exception("Null result from client");
-            }
-
-            BchInfo entity = new BchInfo()
-            {
-                CreateAt= request.CreateAt,
-                Bch = new Domain.Entities.BCH() 
-                {
-                    Name = result.Name,
-                    CallTime= result.CallTime,
-                    PeerCount= result.PeerCount,
-                    UnconfirmedCount= result.UnconfirmedCount,
-                    Hash= result.Hash,
-                    Height = result.Height,
-                    HighFeePerKb= result.HighFeePerKb,
-                    LastForkHash= result.LastForkHash,
-                    LastForkHeight= result.LastForkHeight,
-                    LatestUrl= result.LatestUrl,
-                    LowFeePerKb= result.LowFeePerKb,
-                    MediumFeePerKb= result.MediumFeePerKb,
-                    PreviousHash= result.PreviousHash,
-                    PreviousUrl= result.PreviousUrl,
-                },
-            };
-
             try
             {
+                var result = await _client.GetBCHAsync(request.Type, cancellationToken);
+
+                if (result == null)
+                {
+                    throw new Exception("Null result from client");
+                }
+
+                BchInfo entity = new BchInfo()
+                {
+                    CreateAt = request.CreateAt,
+                    Type = request.Type,
+                    Info = Info.Create(JsonConvert.SerializeObject(result))
+                };
+
                 await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
                 var res = await _unitOfWork.Repository.SaveAsync(entity, cancellationToken);
@@ -64,12 +52,13 @@ namespace BCH.Application.Commands.Create
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
                 await _unitOfWork.CommitTransactionAsync(cancellationToken);
+
+                return result;
             }
             catch (Exception ex)
             {
-                return result;
+                throw ex;
             }
-            return result;
         }
     }
 }

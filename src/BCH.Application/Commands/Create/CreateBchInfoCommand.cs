@@ -11,7 +11,6 @@ namespace BCH.Application.Commands.Create
 {
     public class CreateBchInfoCommand : IRequest<BCHModel>
     {
-
         public BlockchainType Type { get; set; }
 
         public DateTime CreateAt { get; set; }

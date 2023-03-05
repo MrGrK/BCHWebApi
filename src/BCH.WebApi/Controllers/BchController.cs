@@ -5,37 +5,55 @@ using BCH.Application.Models;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using BCH.Application.Queries.GetByDateTime;
+using BCH.WebApi.Request;
 
 namespace BCH.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/bch")]
     [ApiController]
     public class BchController : ControllerBase
     {
 
         private readonly ILogger<BchController> _logger;
-        private readonly IBlockcypherClient _client;
         protected readonly ISender Sender;
 
-        public BchController(ILogger<BchController> logger, IBlockcypherClient client, ISender sender)
+        public BchController(ILogger<BchController> logger, ISender sender)
         {
             Sender = sender;
             _logger = logger;
-            _client = client;
         }
 
-        [HttpGet]
-        [Route("get")]
-        public async Task<BCHModel> GetAsync(BlockchainType type, CancellationToken cancellationToken)
+        /// <summary>
+        /// Get blockchain info from Blockcypher Client and store it in DB
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("fecth")]
+        public async Task<BCHModel> FillAndFetchAsync(PutBchRequest request, CancellationToken cancellationToken)
         {
             var command = new CreateBchInfoCommand()
             {
                 CreateAt = DateTime.UtcNow,
-                Type = type
+                Type = request.BlockChainType
             };
 
             return await Sender.Send(command, cancellationToken);
-            //    await _client.GetBCHAsync(type);
+        }
+
+        [HttpGet]
+        [Route("get")]
+        public async Task<ActionResult> GetByTypeAsync(BlockchainType type, CancellationToken cancellationToken)
+        {
+            var command = new GetByTimestampQuery()
+            {
+                Type = type
+            };
+
+            var result = await Sender.Send(command, cancellationToken);
+            return result.Count() > 0 ? Ok(result): NotFound();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace BCH.Infrasructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<BchInfo>().OwnsOne(p => p.Bch);//, options => options.ToJson());
+            modelBuilder.Entity<BchInfo>().OwnsOne(p => p.Info);//, options => options.ToJson());
         }
     }
 }

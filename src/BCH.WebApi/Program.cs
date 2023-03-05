@@ -12,6 +12,7 @@ using System.Net.NetworkInformation;
 using BCH.Domain.Abstractions;
 using BCH.Domain.Interfaces.Repositories;
 using BCH.Infrasructure.Data.Repositories;
+using System.Text.Json.Serialization;
 
 namespace BCH.WebApi
 {
@@ -23,13 +24,24 @@ namespace BCH.WebApi
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(options =>
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter() ));
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen((sw) =>
+            {
+                sw.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Blockchain Info", Version = "v1" });
+
+                var fileName = Assembly.GetExecutingAssembly().GetName().Name + ".xml";
+                var filePath = Path.Combine(AppContext.BaseDirectory, fileName);
+
+                List<string> xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly).ToList();
+                xmlFiles.ForEach(xmlFile => sw.IncludeXmlComments(xmlFile));
+            });
 
             var blockcyApiOptions = new BlockcyApiSettings();
             builder.Configuration.GetSection(BlockcyApiSettings.BlockcyApi).Bind(blockcyApiOptions);
+            builder.Services.AddSingleton(blockcyApiOptions);
 
             builder.Services.AddScoped<IBlockchainRepository, BlockchainRepository>();
 
@@ -43,8 +55,10 @@ namespace BCH.WebApi
             builder.Services.AddDbContext<DataContext>(options =>
                 options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
             );
-           // AppDomain.CurrentDomain.Load("BCH.Application");
+
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(AppDomain.CurrentDomain.Load("BCH.Application")));
+
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             var app = builder.Build();
 

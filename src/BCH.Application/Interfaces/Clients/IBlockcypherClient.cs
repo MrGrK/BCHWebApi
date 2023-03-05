@@ -10,8 +10,6 @@ namespace BCH.Application.Interfaces.Clients
 {
     public interface IBlockcypherClient
     {
-        Uri ApiBaseUri { get; }
-
         Task<BCHModel?> GetBCHAsync(BlockchainType type, CancellationToken cancellationToken = default);
     }
 }
