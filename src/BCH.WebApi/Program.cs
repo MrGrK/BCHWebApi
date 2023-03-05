@@ -13,6 +13,8 @@ using BCH.Domain.Abstractions;
 using BCH.Domain.Interfaces.Repositories;
 using BCH.Infrasructure.Data.Repositories;
 using System.Text.Json.Serialization;
+using BCH.Application.Behaviors;
+using Serilog;
 
 namespace BCH.WebApi
 {
@@ -58,7 +60,15 @@ namespace BCH.WebApi
 
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(AppDomain.CurrentDomain.Load("BCH.Application")));
 
+            builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehavior<,>));
+
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            builder.Host.UseSerilog((context, config) =>
+                config
+                    .WriteTo.Console()
+                    .ReadFrom.Configuration(context.Configuration)
+            );
 
             var app = builder.Build();
 
@@ -68,6 +78,8 @@ namespace BCH.WebApi
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseSerilogRequestLogging();
 
             app.UseHttpsRedirection();
 

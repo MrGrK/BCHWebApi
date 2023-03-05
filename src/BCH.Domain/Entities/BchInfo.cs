@@ -13,8 +13,4 @@ namespace BCH.Domain.Entities
 
         public Info Info { get; set; }
     }
-
-
-
- 
 }

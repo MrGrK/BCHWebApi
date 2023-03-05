@@ -52,10 +52,5 @@ namespace BCH.Infrasructure.Services
                     cancellationToken)
                 .ConfigureAwait(false);
         }
-
-        //Task<BCHModel> IBlockcypherService.GetBCHAsync(BlockchainType type, CancellationToken cancellationToken)
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }

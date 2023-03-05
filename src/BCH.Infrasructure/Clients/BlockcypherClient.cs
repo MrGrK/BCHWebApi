@@ -17,7 +17,6 @@ namespace BCH.Infrasructure.Clients
 {
     public class BlockcypherClient : IBlockcypherClient
     {
-        //private readonly IBlockcypherService _blockcypherService;
         private readonly JsonSerializerOptions _jsonOptions;
         private readonly HttpClient _httpClient;
         private readonly Dictionary<BlockchainType, string> _uries;
