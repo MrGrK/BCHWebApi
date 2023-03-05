@@ -266,6 +266,7 @@ ServiceFabricBackup/
 *.ldf
 *.ndf
 
+
 # Business Intelligence projects
 *.rdl.data
 *.bim.layout
@@ -396,3 +397,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/src/BCH.WebApi/sqlite.db
+/src/BCH.WebApi/sqlite.db-shm
+/src/BCH.WebApi/sqlite.db-wal

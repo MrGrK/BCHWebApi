@@ -1,5 +1,5 @@
-﻿using BCH.Domain;
-using BCH.Infrasructure.Models;
+﻿using BCH.Domain.Primitives;
+using BCH.Domain.Entities;
 using BCH.Infrasructure.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using BCH.Application.Models;
 
 namespace BCH.Infrasructure.Services
 {
