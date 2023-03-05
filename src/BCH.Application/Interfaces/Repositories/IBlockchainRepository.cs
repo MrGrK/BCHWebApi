@@ -11,7 +11,7 @@ namespace BCH.Domain.Interfaces.Repositories
 {
     public interface IBlockchainRepository
     {
-        public Task<IQueryable<BchInfo>> GetAllAsync(CancellationToken token);
+        public Task<List<Info>> GetAllAsync(CancellationToken token);
 
         public Task<List<Info>> GetByTypeAsync(BlockchainType type, CancellationToken cancellationToken);
 

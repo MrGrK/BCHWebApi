@@ -13,6 +13,8 @@ using MediatR;
 using System.Collections;
 using Newtonsoft.Json;
 using BCH.Domain.ValueObjects;
+using BCH.Application.Queries.GetByDateTime;
+using Microsoft.Extensions.Logging;
 
 namespace BCH.Application.Commands.Create
 {
@@ -20,11 +22,13 @@ namespace BCH.Application.Commands.Create
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBlockcypherClient _client;
+        private readonly ILogger<CreateBchInfoCommandHandler> _logger;
 
-        public CreateBchInfoCommandHandler(IUnitOfWork uow, IBlockcypherClient client)
+        public CreateBchInfoCommandHandler(IUnitOfWork uow, IBlockcypherClient client, ILogger<CreateBchInfoCommandHandler> logger)
         {
             _unitOfWork = uow;
             _client = client;
+            _logger = logger;
         }
 
         public async Task<BCHModel> Handle(CreateBchInfoCommand request, CancellationToken cancellationToken)
@@ -57,6 +61,7 @@ namespace BCH.Application.Commands.Create
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, ex.Message, ex.StackTrace);
                 throw ex;
             }
         }
